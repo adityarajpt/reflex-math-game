@@ -11,11 +11,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.view.View;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.AdRequest;
+
 
 
 public class gameOver extends Activity {
     int highscoreOrg;
     int newHighScore;
+    private InterstitialAd mInterstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,28 @@ public class gameOver extends Activity {
         TextView noofques = findViewById(R.id.highScoreView);
         Button playAgain = findViewById(R.id.tryAgainButton);
         TextView questionss = findViewById(R.id.questions);
+
+
+        //ads code goes here
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-6819368301265177~3947722135");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-6819368301265177/7540663383");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener()
+                                      {
+                                          @Override
+                                          public void onAdClosed() {
+                                              super.onAdClosed();
+                                              startActivity(new Intent(getApplicationContext(), GameActivity.class));
+                                              mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                          }
+                                      }
+
+
+        );
+        //
+
 
         //getting high-score from shared preferances and comparing it with new high-score
         SharedPreferences highScoresp = this.getSharedPreferences("com.buzzhipster.adityarajput.quickmaths_braintrainer" , Context.MODE_PRIVATE);
@@ -54,8 +83,12 @@ public class gameOver extends Activity {
         questionss.setText("Correct :" + Integer.toString(correct));
 
     }
-    public void playAgainm(View view){
-        startActivity(new Intent(getApplicationContext(), GameActivity.class));
+    public void playAgainm(View view) {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            startActivity(new Intent(getApplicationContext(), GameActivity.class));
+        }
     }
     public void goHome(View view){
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
