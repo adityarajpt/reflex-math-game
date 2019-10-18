@@ -41,7 +41,7 @@ public class MainActivity extends Activity{
          SharedPreferences highScoresp = this.getSharedPreferences("com.buzzhipster.adityarajput.quickmaths_braintrainer" , Context.MODE_PRIVATE);
          highScore1 = highScoresp.getInt("highScore", 0);
 
-         highScoreDisplay.setText("High Score : " + Integer.toString(highScore1));
+         highScoreDisplay.setText("Score to beat: " + Integer.toString(highScore1));
     }
 
     @Override
